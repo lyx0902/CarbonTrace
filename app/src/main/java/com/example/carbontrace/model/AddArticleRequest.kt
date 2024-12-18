@@ -1,5 +1,5 @@
 package com.example.carbontrace.model
 
-class AddArticleRequest(
-    atext:String
+data class AddArticleRequest(
+    val atext:String
 )

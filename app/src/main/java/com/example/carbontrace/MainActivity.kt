@@ -128,6 +128,40 @@ fun WelcomeButtons() {
     }
 }
 
+@Composable
+fun Loginpage(){
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp)
+    ){
+        LoginInputBox()
+        HintWithUnderLine()
+        LoginButton()
+    }
+}
+
+@Composable
+fun LoginInputBox(){
+    Column{
+        LoginTextField("Username")
+        Spacer(modifier = Modifier.height(8.dp))
+        LoginTextField("Password")
+    }
+}
+
+@Composable
+fun LoginTextField(placeHolder: String) {
+    OutlinedTextField(
+        value = "",
+        onValueChange = { /*TODO*/ },
+        label = { Text(text = placeHolder) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {

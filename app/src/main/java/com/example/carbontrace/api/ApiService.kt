@@ -1,5 +1,6 @@
 package com.example.carbontrace.api
 
+import com.example.carbontrace.model.AddArticleRequest
 import com.example.carbontrace.model.LoginRequest
 import com.example.carbontrace.model.RegisterRequest
 import com.example.carbontrace.model.UpdateProfileRequest
@@ -28,4 +29,10 @@ interface ApiService {
 
     @GET("/get_user_by_name")
     suspend fun getUserByName(@Query("name") name: String): Response<Map<String, Any>>
+
+    @POST("/add_article")
+    suspend fun addArticle(@Body addArticleRequest: AddArticleRequest): Response<Map<String, String>>
+
+    @GET("/get_article")
+    suspend fun getArticle(@Query("aid") aid: Int): Response<Map<String, String>>
 }

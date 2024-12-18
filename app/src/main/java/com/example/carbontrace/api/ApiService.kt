@@ -2,6 +2,7 @@ package com.example.carbontrace.api
 
 import com.example.carbontrace.model.LoginRequest
 import com.example.carbontrace.model.RegisterRequest
+import com.example.carbontrace.model.UpdateProfileRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -21,4 +22,10 @@ interface ApiService {
 
     @POST("/login")
     suspend fun loginUser(@Body loginRequest: LoginRequest): Response<Map<String, String>>
+
+    @PUT("/update_profile")
+    suspend fun updateProfile(@Body updateProfileRequest: UpdateProfileRequest): Response<Map<String, String>>
+
+    @GET("/get_user_by_name")
+    suspend fun getUserByName(@Query("name") name: String): Response<Map<String, Any>>
 }

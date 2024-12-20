@@ -146,19 +146,37 @@ fun WelcomeButtons(navController: NavHostController) {
 }
 
 @Composable
-fun LoginPage(navController: NavHostController){
-    Column(
-        Modifier
+fun LoginPage(navController: NavHostController) {
+    Box(
+        modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-    ){
-        Spacer(modifier = Modifier.height(65.dp))
-        LoginTitle()
-        LoginInputBox()
-        Spacer(modifier = Modifier.height(16.dp))
-        HintWithUnderLine()
-        Spacer(modifier = Modifier.height(16.dp))
-        LoginButton()
+            .padding(16.dp)
+    ) {
+        Column(
+            modifier = Modifier.align(Alignment.TopCenter)
+        ) {
+            Spacer(modifier = Modifier.height(65.dp))
+            LoginTitle()
+            LoginInputBox()
+            Spacer(modifier = Modifier.height(16.dp))
+            HintWithUnderLine()
+            Spacer(modifier = Modifier.height(16.dp))
+            LoginButton()
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { navController.navigate("welcome") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(horizontal = 80.dp)//左右两侧添加内边距
+            ) {
+                Text(
+                    text = "Return",
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+            }
+        }
     }
 }
 
@@ -260,10 +278,10 @@ fun LoginButton(){
 
 
 
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    CarbonTraceTheme{
-//        WelcomePage()
-//    }
-//}
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    CarbonTraceTheme{
+        LoginPage(navController = rememberNavController())
+    }
+}

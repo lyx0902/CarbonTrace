@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,8 +24,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.carbontrace.ui.theme.CarbonTraceTheme
-
-
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.example.carbontrace.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,11 +50,16 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    var loginMessage by remember { mutableStateOf("") }
+
     NavHost(navController = navController, startDestination = "welcome") {
         composable("login") { LoginPage(navController) }
         composable("welcome") { WelcomePage(navController) }
+        composable("loginResult") { LoginResultPage(loginMessage) }
     }
 }
+
+
 
 @Composable
 fun WelcomePage(navController: NavHostController) {
@@ -146,7 +158,11 @@ fun WelcomeButtons(navController: NavHostController) {
 }
 
 @Composable
-fun LoginPage(navController: NavHostController) {
+fun LoginPage(navController: NavHostController) {//登录界面
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var loginMessage by remember { mutableStateOf("") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -157,18 +173,18 @@ fun LoginPage(navController: NavHostController) {
         ) {
             Spacer(modifier = Modifier.height(65.dp))
             LoginTitle()
-            LoginInputBox()
+            LoginInputBox(username, password, onUsernameChange = { username = it }, onPasswordChange = { password = it })
             Spacer(modifier = Modifier.height(16.dp))
             HintWithUnderLine()
             Spacer(modifier = Modifier.height(16.dp))
-            LoginButton()
+            LoginButton(username, password, navController, onLoginMessageChange = { loginMessage = it })
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = { navController.navigate("welcome") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
-                    .padding(horizontal = 80.dp)//左右两侧添加内边距
+                    .padding(horizontal = 80.dp)
             ) {
                 Text(
                     text = "Return",
@@ -177,6 +193,22 @@ fun LoginPage(navController: NavHostController) {
                 )
             }
         }
+    }
+}
+
+@Composable
+fun LoginResultPage(loginMessage: String) {//登录结果界面
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = loginMessage,
+            fontSize = 24.sp,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -191,20 +223,20 @@ fun LoginTitle(){
 }
 
 @Composable
-fun LoginInputBox(){
-    Column{
+fun LoginInputBox(username: String, password: String, onUsernameChange: (String) -> Unit, onPasswordChange: (String) -> Unit) {
+    Column {
         Spacer(modifier = Modifier.height(30.dp))
-        LoginTextField("Username")
+        LoginTextField("Username", username, onUsernameChange)
         Spacer(modifier = Modifier.height(8.dp))
-        LoginTextField("Password")
+        LoginTextField("Password", password, onPasswordChange)
     }
 }
 
 @Composable
-fun LoginTextField(placeHolder: String) {
+fun LoginTextField(placeHolder: String, text: String, onTextChange: (String) -> Unit) {
     OutlinedTextField(
-        value = "",
-        onValueChange = { /*TODO*/ },
+        value = text,
+        onValueChange = onTextChange,
         label = { Text(text = placeHolder) },
         modifier = Modifier
             .fillMaxWidth()
@@ -259,13 +291,26 @@ fun BottomText(){
 }
 
 @Composable
-fun LoginButton(){
+fun LoginButton(username: String, password: String, navController: NavHostController, onLoginMessageChange: (String) -> Unit) {
     Button(
-        onClick = { /*TODO*/ },
+        onClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                val result = UserRepository.loginUser(username, password)
+                    withContext(Dispatchers.Main) {
+                    result.onSuccess {
+                        onLoginMessageChange(it)
+                        navController.navigate("loginResult")
+                    }.onFailure {
+                        onLoginMessageChange(it.message ?: "Unknown error")
+                        navController.navigate("loginResult")
+                    }
+                }
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-    ){
+    ) {
         Text(
             text = "Log in",
             color = Color.White,
@@ -274,14 +319,74 @@ fun LoginButton(){
     }
 }
 
+@Composable
+fun UserProfilePage() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Spacer(modifier = Modifier.height(44.dp))
+        Text(
+            text = "我的",
+            fontSize = 32.sp,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(32.dp)
+        )
+//        Divider(color = Color.LightGray, thickness = 8.dp, modifier = Modifier.fillMaxWidth())
+        Text(
+            text = "Username :",
+            fontSize = 18.sp,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(24.dp)
+        )
+//        Divider(color = Color.LightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
+        Text(
+            text = "Grade :",
+            fontSize = 18.sp,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(24.dp)
+        )
+//        Divider(color = Color.LightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
+        Text(
+            text = "Points :",
+            fontSize = 18.sp,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(24.dp)
+        )
+//        Divider(color = Color.LightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { },
+            modifier = Modifier
+                .align(Alignment.End)
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "个人信息维护",
+                fontSize = 20.sp
+            )
+        }
+    }
+}
 
 
 
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    CarbonTraceTheme{
+//        LoginPage(navController = rememberNavController())
+//    }
+//}
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     CarbonTraceTheme{
-        LoginPage(navController = rememberNavController())
+        UserProfilePage()
     }
 }

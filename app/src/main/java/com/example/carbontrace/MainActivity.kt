@@ -41,15 +41,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             CarbonTraceTheme{
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    val user = User(
-                        uid = 1,
-                        username = "exampleUsername",
-                        password = "examplePassword",
-                        grade = 1,
-                        carbons = 100,
-                        points = 200,
-                        age = 25
-                    )
+//                    val user = User(
+//                        uid = 1,
+//                        username = "exampleUsername",
+//                        password = "examplePassword",
+//                        grade = 1,
+//                        carbons = 100,
+//                        points = 200,
+//                        age = 25
+//                    )
 //                    AppNavHost(rememberNavController(),user)
                     AppNavigation()
                 }

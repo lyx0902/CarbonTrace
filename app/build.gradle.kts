@@ -85,4 +85,8 @@ dependencies {
     implementation(kotlin("script-runtime"))
 
     implementation ("androidx.navigation:navigation-compose:2.5.3")
+
+    implementation ("androidx.compose.runtime:runtime:1.0.5")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
 }

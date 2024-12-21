@@ -39,8 +39,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            CarbonTraceTheme{
-                Surface(modifier = Modifier.fillMaxSize()) {
+            CarbonTraceTheme {
+//                Surface(modifier = Modifier.fillMaxSize()) {
 //                    val user = User(
 //                        uid = 1,
 //                        username = "exampleUsername",
@@ -51,8 +51,8 @@ class MainActivity : ComponentActivity() {
 //                        age = 25
 //                    )
 //                    AppNavHost(rememberNavController(),user)
-                    AppNavigation()
-                }
+                AppNavigation()
+//                }
             }
         }
     }

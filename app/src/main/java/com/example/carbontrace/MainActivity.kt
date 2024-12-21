@@ -27,6 +27,7 @@ import com.example.carbontrace.ui.theme.CarbonTraceTheme
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.carbontrace.model.User
 import com.example.carbontrace.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             CarbonTraceTheme{
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    AppNavigation()
+                    val user = User(
+                        uid = 1,
+                        username = "exampleUsername",
+                        password = "examplePassword",
+                        grade = 1,
+                        carbons = 100,
+                        points = 200,
+                        age = 25
+                    )
+                    AppNavHost(rememberNavController(),user)
+//                    AppNavigation()
                 }
             }
         }
@@ -59,7 +70,17 @@ fun AppNavigation() {
     }
 }
 
-
+@Composable
+fun AppNavHost(navController: NavHostController, user: User) {
+    NavHost(navController, startDestination = "userProfileMaintenance") {
+        composable("userProfileMaintenance") { UserProfileMaintenancePage(navController, user) }
+        composable("userProfile") { UserProfilePage(navController) }
+        composable("updateResult/{result}") { backStackEntry ->
+            val result = backStackEntry.arguments?.getString("result")
+            UpdateResultPage(result)
+        }
+    }
+}
 
 @Composable
 fun WelcomePage(navController: NavHostController) {
@@ -320,7 +341,7 @@ fun LoginButton(username: String, password: String, navController: NavHostContro
 }
 
 @Composable
-fun UserProfilePage() {
+fun UserProfilePage(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -333,7 +354,6 @@ fun UserProfilePage() {
                 .align(Alignment.CenterHorizontally)
                 .padding(32.dp)
         )
-//        Divider(color = Color.LightGray, thickness = 8.dp, modifier = Modifier.fillMaxWidth())
         Text(
             text = "Username :",
             fontSize = 18.sp,
@@ -341,7 +361,6 @@ fun UserProfilePage() {
                 .align(Alignment.Start)
                 .padding(24.dp)
         )
-//        Divider(color = Color.LightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
         Text(
             text = "Grade :",
             fontSize = 18.sp,
@@ -349,7 +368,6 @@ fun UserProfilePage() {
                 .align(Alignment.Start)
                 .padding(24.dp)
         )
-//        Divider(color = Color.LightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
         Text(
             text = "Points :",
             fontSize = 18.sp,
@@ -357,10 +375,9 @@ fun UserProfilePage() {
                 .align(Alignment.Start)
                 .padding(24.dp)
         )
-//        Divider(color = Color.LightGray, thickness = 3.dp, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { },
+            onClick = { navController.navigate("userProfileMaintenance") },
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(16.dp)
@@ -373,7 +390,107 @@ fun UserProfilePage() {
     }
 }
 
+@Composable
+fun UserProfileMaintenancePage(navController: NavHostController, user: User) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "个人信息维护",
+            fontSize = 32.sp,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(16.dp)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "uid: ${user.uid}",
+            fontSize = 18.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "username: ${user.username}",
+            fontSize = 18.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "password: ${user.password}",
+            fontSize = 18.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "grade: ${user.grade}",
+            fontSize = 18.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "carbons: ${user.carbons}",
+            fontSize = 18.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(8 .dp))
+        Text(
+            text = "points: ${user.points}",
+            fontSize = 18.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "age: ${user.age}",
+            fontSize = 18.sp,
+            modifier = Modifier.align(Alignment.Start)
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    val result = UserRepository.updateProfile(user.username, "newName", "newPassword", user.age)
+                    withContext(Dispatchers.Main) {
+                        navController.navigate("updateResult/${result.getOrNull()}")
+                    }
+                }
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "更新信息")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { navController.navigate("userProfile") },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "返回主页")
+        }
+    }
+}
 
+@Composable
+fun UpdateResultPage(result: String?) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "更新结果",
+            fontSize = 32.sp,
+            modifier = Modifier.padding(16.dp)
+        )
+        Text(
+            text = result ?: "无结果",
+            fontSize = 18.sp,
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
 
 //@Preview(showBackground = true)
 //@Composable
@@ -383,10 +500,10 @@ fun UserProfilePage() {
 //    }
 //}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CarbonTraceTheme{
-        UserProfilePage()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    CarbonTraceTheme{
+//        UserProfilePage()
+//    }
+//}

@@ -1,5 +1,6 @@
 package com.example.carbontrace
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,19 +42,42 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CarbonTraceTheme {
-//                Surface(modifier = Modifier.fillMaxSize()) {
-//                    val user = User(
-//                        uid = 1,
-//                        username = "exampleUsername",
-//                        password = "examplePassword",
-//                        grade = 1,
-//                        carbons = 100,
-//                        points = 200,
-//                        age = 25
-//                    )
-//                    AppNavHost(rememberNavController(),user)
-                AppNavigation()
-//                }
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    var user by remember { mutableStateOf<User?>(null) }
+                    val navController = rememberNavController()
+
+                    // 从 Intent 中获取 username
+                    val username = intent.getStringExtra("username") ?: ""
+
+                    LaunchedEffect(username) {
+                        val result = UserRepository.getUserByName(username)
+                        result.onSuccess {
+                            user = User(
+                                uid = it["uid"] as Int,
+                                username = it["username"] as String,
+                                password = it["password"] as String,
+                                grade = it["grade"] as Int,
+                                carbons = it["carbons"] as Int,
+                                points = it["points"] as Int,
+                                age = it["age"] as Int
+                            )
+                        }.onFailure {
+                            // 处理错误
+                        }
+                    }
+
+                    if (user == null) {
+                        // 显示加载指示器
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    } else {
+                        AppNavHost(navController, user!!)
+                    }
+                }
             }
         }
     }
@@ -179,7 +204,7 @@ fun WelcomeButtons(navController: NavHostController) {
 }
 
 @Composable
-fun LoginPage(navController: NavHostController) {//登录界面
+fun LoginPage(navController: NavHostController) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var loginMessage by remember { mutableStateOf("") }
@@ -317,10 +342,14 @@ fun LoginButton(username: String, password: String, navController: NavHostContro
         onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 val result = UserRepository.loginUser(username, password)
-                    withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     result.onSuccess {
                         onLoginMessageChange(it)
-                        navController.navigate("loginResult")
+                        val context = navController.context
+                        val intent = Intent(context, MainActivity::class.java).apply {
+                            putExtra("username", username)
+                        }
+                        context.startActivity(intent)
                     }.onFailure {
                         onLoginMessageChange(it.message ?: "Unknown error")
                         navController.navigate("loginResult")
@@ -385,6 +414,39 @@ fun UserProfilePage(navController: NavHostController) {
             Text(
                 text = "个人信息维护",
                 fontSize = 20.sp
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { navController.navigate("userInfo") },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "查询")
+        }
+    }
+}
+
+@Composable
+fun UserInfoScreen(userData: Map<String, Any>) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "User Information",
+            fontSize = 32.sp,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(16.dp)
+        )
+        userData.forEach { (key, value) ->
+            Text(
+                text = "$key: $value",
+                fontSize = 18.sp,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(8.dp)
             )
         }
     }

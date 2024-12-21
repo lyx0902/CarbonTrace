@@ -50,8 +50,8 @@ class MainActivity : ComponentActivity() {
                         points = 200,
                         age = 25
                     )
-                    AppNavHost(rememberNavController(),user)
-//                    AppNavigation()
+//                    AppNavHost(rememberNavController(),user)
+                    AppNavigation()
                 }
             }
         }

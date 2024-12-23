@@ -59,15 +59,28 @@ object UserRepository {
 
     //用户信息查询
     suspend fun getUserByName(username: String): Result<Map<String, Any>> {
+        if (username.isBlank()) {
+            return Result.failure(Exception("Username cannot be empty"))
+        }
         return try {
-            val response = RetrofitInstance.apiService.getUserByName(username)
+            val encodedUsername = java.net.URLEncoder.encode(username, "UTF-8")
+            val response = RetrofitInstance.apiService.getUserByName(encodedUsername)
             if (response.isSuccessful) {
                 Result.success(response.body() ?: emptyMap())
             } else {
-                Result.failure(Exception("查询失败: ${response.body()?.get("message") ?: "未知错误"}"))
+                val errorBody = response.errorBody()?.string()
+                val contentType = response.errorBody()?.contentType()?.toString()
+                val message = if (contentType != null && contentType.contains("application/json")) {
+                    errorBody?.let {
+                        JSONObject(it).optString("message", "Query failed: Unknown error")
+                    } ?: "Query failed: Unknown error"
+                } else {
+                    "Query failed: ${response.code()} ${response.message()}"
+                }
+                Result.failure(Exception(message))
             }
         } catch (e: Exception) {
-            Result.failure(Exception("查询失败: ${e.message}"))
+            Result.failure(Exception("Query failed: ${e.message}"))
         }
     }
 

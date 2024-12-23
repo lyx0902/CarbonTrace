@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,21 +28,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.carbontrace.Home.HomeScreen
 import com.example.carbontrace.article.AQScreen
 import com.example.carbontrace.article.post1
 import com.example.carbontrace.model.User
 import com.example.carbontrace.repository.UserRepository
+import com.example.carbontrace.transfer.UserViewModel
 import com.example.carbontrace.ui.theme.CarbonTraceTheme
 
 class MainActivity : ComponentActivity() {
+    private val userViewModel: UserViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val navController = rememberNavController()
             CarbonTraceTheme {
-                HomePage()
+                HomePage(navController, userViewModel)
             }
         }
     }
@@ -81,13 +88,11 @@ fun switchScreenType() {
 
 //实例个人信息页面
 @Composable
-fun ProfileScreen() {
-    var userProfileData by remember { mutableStateOf<Result<Map<String, Any>>?>(null) }
-    var newPassword by remember { mutableStateOf("") }
+fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel) {
+    val userProfileData by userViewModel.userProfile.observeAsState()
 
     LaunchedEffect(user.username) {
-        val result = UserRepository.getUserByName("Bob")
-        userProfileData = result
+        userViewModel.getUserProfile(user.username)
     }
 
     Column(
@@ -104,45 +109,54 @@ fun ProfileScreen() {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        userProfileData?.let { result ->
-            result.onSuccess { data ->
-                data.forEach { (key, value) ->
-                    Text(
-                        text = "$key: $value",
-                        fontSize = 18.sp,
-                        modifier = Modifier.align(Alignment.Start)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-            }?.onFailure {
-                Text(
-                    text = "获取用户信息失败: ${it.message}",
-                    fontSize = 18.sp,
-                    modifier = Modifier.align(Alignment.Start)
-                )
-            }
+        userProfileData?.let { user ->
+            Text(
+                text = "Username: ${user.username}",
+                fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.Start)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Password: ${user.password}",
+                fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.Start)
+            )
+        } ?: run {
+            Text(
+                text = "Loading...",
+                fontSize = 18.sp,
+                modifier = Modifier.align(Alignment.Start)
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = {
+                navController.popBackStack("Home", inclusive = false)//todo 这个跳转有问题
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "返回主页")
+        }
 
-        OutlinedTextField(
-            value = newPassword,
-            onValueChange = { newPassword = it },
-            label = { Text("newpassword") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { navController.navigate("updateResult/更新信息") },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "更新信息")
+        }
     }
-
 }
 
 @Composable
-fun HomePage(){
+fun HomePage(navController: NavHostController, userViewModel: UserViewModel) {
     val homeListLazyListState = rememberLazyListState()
 
     when (screenType) {
         ScreenType.LOGIN -> {
             Surface(modifier = Modifier.fillMaxSize()) {
-                AppNavHost(rememberNavController())
+                AppNavHost(navController)
             }
         }
         ScreenType.HOME -> {
@@ -153,11 +167,11 @@ fun HomePage(){
         ScreenType.AQDETAILS -> {
             AQScreen(
                 post = targetPost,
-                onBack = {switchScreenType()},
+                onBack = { switchScreenType() },
             )
         }
         ScreenType.PROFILE -> {
-            ProfileScreen()
+            ProfileScreen(navController, userViewModel)
         }
     }
 }

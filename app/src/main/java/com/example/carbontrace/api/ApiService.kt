@@ -29,6 +29,7 @@ interface ApiService {
     @PUT("/update_profile")
     suspend fun updateProfile(@Body updateProfileRequest: UpdateProfileRequest): Response<Map<String, String>>
 
+    @Headers("Content-Type: application/json")
     @GET("/get_user_by_name")
     suspend fun getUserByName(@Query("username") username: String): Response<Map<String, Any>>
 

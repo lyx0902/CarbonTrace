@@ -60,23 +60,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Checkbox
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.state.ToggleableState
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.ParagraphStyle
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextIndent
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
+
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
-import com.example.carbontrace.ui.theme.carbontraceTheme
-import com.example.carbontrace.R
 
 val defaultSpacerSize = 24.dp
 

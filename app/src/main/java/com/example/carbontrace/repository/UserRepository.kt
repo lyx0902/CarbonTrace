@@ -58,9 +58,9 @@ object UserRepository {
     }
 
     //用户信息查询
-    suspend fun getUserByName(name: String): Result<Map<String, Any>> {
+    suspend fun getUserByName(username: String): Result<Map<String, Any>> {
         return try {
-            val response = RetrofitInstance.apiService.getUserByName(name)
+            val response = RetrofitInstance.apiService.getUserByName(username)
             if (response.isSuccessful) {
                 Result.success(response.body() ?: emptyMap())
             } else {

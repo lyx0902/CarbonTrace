@@ -30,7 +30,7 @@ interface ApiService {
     suspend fun updateProfile(@Body updateProfileRequest: UpdateProfileRequest): Response<Map<String, String>>
 
     @GET("/get_user_by_name")
-    suspend fun getUserByName(@Query("name") name: String): Response<Map<String, Any>>
+    suspend fun getUserByName(@Query("username") username: String): Response<Map<String, Any>>
 
     @POST("/add_article")
     suspend fun addArticle(@Body addArticleRequest: AddArticleRequest): Response<Map<String, String>>

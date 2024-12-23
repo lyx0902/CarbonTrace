@@ -1,6 +1,7 @@
 package com.example.carbontrace.api
 
 import com.example.carbontrace.model.AddArticleRequest
+import com.example.carbontrace.model.AddPointsRequest
 import com.example.carbontrace.model.AddProblemRequest
 import com.example.carbontrace.model.LoginRequest
 import com.example.carbontrace.model.RegisterRequest
@@ -42,4 +43,7 @@ interface ApiService {
 
     @GET("/get_problem")
     suspend fun getProblem(@Query("pid") pid: Int): Response<Map<String, String>>
+
+    @PUT("/add_points")
+    suspend fun addPoints(@Body addPointsRequest: AddPointsRequest): Response<Map<String, String>>
 }

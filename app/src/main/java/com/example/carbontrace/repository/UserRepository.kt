@@ -1,6 +1,7 @@
 package com.example.carbontrace.repository
 
 import com.example.carbontrace.api.RetrofitInstance
+import com.example.carbontrace.model.AddPointsRequest
 import com.example.carbontrace.model.LoginRequest
 import com.example.carbontrace.model.RegisterRequest
 import com.example.carbontrace.model.UpdateProfileRequest
@@ -67,6 +68,21 @@ object UserRepository {
             }
         } catch (e: Exception) {
             Result.failure(Exception("查询失败: ${e.message}"))
+        }
+    }
+
+    //用户积分增加
+    suspend fun addPoints(username: String, addpoint: Int): Result<String> {
+        val addPointsRequest = AddPointsRequest(username, addpoint)
+        return try {
+            val response = RetrofitInstance.apiService.addPoints(addPointsRequest)
+            if (response.isSuccessful) {
+                Result.success("分数更新成功")
+            } else {
+                Result.failure(Exception("分数更新失败: ${response.body()?.get("message") ?: "未知错误"}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(Exception("分数更新失败: ${e.message}"))
         }
     }
 }

@@ -61,6 +61,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.carbontrace.HomePage
 import com.example.carbontrace.R
 import com.example.carbontrace.ScreenType
 import com.example.carbontrace.article.AQScreen
@@ -149,8 +150,11 @@ fun HomeScreen(
                     style = MaterialTheme.typography.titleLarge
                 )
                 Spacer(Modifier.height(defaultSpacerSize))
+                Image(painterResource(R.drawable.map1),"")
+                Spacer(Modifier.height(defaultSpacerSize))
             }
             items(postList) { PostCardSimple(it) }
+            item { HorizontalDivider(thickness = 2.dp) }
         }
     }
 }

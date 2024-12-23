@@ -74,6 +74,7 @@ fun ProfileScreen() {
     }
 }
 
+
 @Composable
 fun HomePage(){
     val homeListLazyListState = rememberLazyListState()

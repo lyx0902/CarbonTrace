@@ -296,6 +296,7 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
+
     @Composable
     fun LoginTextField(placeHolder: String, text: String, onTextChange: (String) -> Unit) {
         OutlinedTextField(

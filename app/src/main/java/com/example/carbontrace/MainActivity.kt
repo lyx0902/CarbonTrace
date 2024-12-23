@@ -85,18 +85,20 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun AppNavHost(navController: NavHostController, user: User) {
-        NavHost(navController, startDestination = "userProfile") {
+        NavHost(navController, startDestination = "welcome") {
+            composable("login") { LoginPage(navController) }
+            composable("welcome") { WelcomePage(navController) }
+            composable("loginResult") { LoginResultPage("") }
             composable("userProfileMaintenance") { UserProfileMaintenancePage(navController, user) }
             composable("userProfile") { UserProfilePage(navController) }
             composable("updateResult/{result}") { backStackEntry ->
                 val result = backStackEntry.arguments?.getString("result")
-                UpdateResultPage(result)
+                UpdateResultPage(navController, result)
             }
-            composable("login") { LoginPage(navController) }
-            composable("welcome") { WelcomePage(navController) }
-            composable("loginResult") { LoginResultPage("") }
         }
     }
+
+
 
     @Composable
     fun WelcomePage(navController: NavHostController) {
@@ -484,11 +486,19 @@ class MainActivity : ComponentActivity() {
             ) {
                 Text(text = "返回主页")
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { navController.navigate("updateResult/更新信息") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "更新信息")
+            }
         }
     }
 
-    @Composable
-    fun UpdateResultPage(result: String?) {
+@Composable
+    fun UpdateResultPage(navController: NavHostController, result: String?) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -506,6 +516,13 @@ class MainActivity : ComponentActivity() {
                 fontSize = 18.sp,
                 modifier = Modifier.padding(16.dp)
             )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { navController.navigate("userProfileMaintenance") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "返回个人信息维护")
+            }
         }
     }
 

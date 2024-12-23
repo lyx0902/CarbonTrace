@@ -85,12 +85,12 @@ class LoginActivity : ComponentActivity() {
 //    }
 
     @Composable
-    fun AppNavHost(navController: NavHostController, user: User) {
+    fun AppNavHost(navController: NavHostController) {
         NavHost(navController, startDestination = "welcome") {
             composable("login") { LoginPage(navController) }
             composable("welcome") { WelcomePage(navController) }
             composable("loginResult") { LoginResultPage("") }
-            composable("userProfileMaintenance") { UserProfileMaintenancePage(navController, user) }
+            composable("userProfileMaintenance") { UserProfileMaintenancePage(navController) }
             composable("userProfile") { UserProfilePage(navController) }
             composable("updateResult/{result}") { backStackEntry ->
                 val result = backStackEntry.arguments?.getString("result")
@@ -199,8 +199,8 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     fun LoginPage(navController: NavHostController) {
-        var username by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+        var username by remember { mutableStateOf(user.username) }
+        var password by remember { mutableStateOf(user.password) }
         var loginMessage by remember { mutableStateOf("") }
         var userProfileData by remember { mutableStateOf<Result<Map<String, Any>>?>(null) }
 
@@ -219,12 +219,14 @@ class LoginActivity : ComponentActivity() {
                     password,
                     onUsernameChange = {
                         username = it
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val result = UserRepository.getUserByName(it)
-                            withContext(Dispatchers.Main) {
-                                userProfileData = result
-                            }
-                        }
+
+//                        CoroutineScope(Dispatchers.IO).launch {
+//                            val result = UserRepository.getUserByName(it)
+//                            withContext(Dispatchers.Main) {
+//                                userProfileData = result
+//                            }
+//                        }
+
                     },
                     onPasswordChange = { password = it }
                 )
@@ -370,7 +372,8 @@ class LoginActivity : ComponentActivity() {
                         result.onSuccess {
                             onLoginMessageChange(it)
                             switchScreenType()
-                            //navController.navigate("loginResult")
+                            user.username = username
+                            user.password = password
                         }.onFailure {
                             onLoginMessageChange(it.message ?: "Unknown error")
                             navController.navigate("loginResult")
@@ -441,7 +444,7 @@ class LoginActivity : ComponentActivity() {
     }
 
     @Composable
-    fun UserProfileMaintenancePage(navController: NavHostController, user: User) {
+    fun UserProfileMaintenancePage(navController: NavHostController) {
         var userProfileData by remember { mutableStateOf<Result<Map<String, Any>>?>(null) }
 
         LaunchedEffect(user.username) {

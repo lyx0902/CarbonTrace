@@ -1,11 +1,11 @@
 package com.example.carbontrace.model
 
 data class User (
-    val uid: Int?,
-    val username: String,
-    val password: String,
-    val grade: Int,
-    val carbons: Int,
-    val points: Int,
-    val age: Int,
+    var uid: Int?,
+    var username: String,
+    var password: String,
+    var grade: Int,
+    var carbons: Int,
+    var points: Int,
+    var age: Int,
 )

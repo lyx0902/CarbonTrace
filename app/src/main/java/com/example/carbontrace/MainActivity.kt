@@ -13,8 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,7 +71,7 @@ enum class ScreenType {
 }
 
 //可变状态
-var screenType by mutableStateOf(ScreenType.LOGIN)
+var screenType by mutableStateOf(ScreenType.PROFILE)
 var targetPost by mutableStateOf(post1)
 var user by mutableStateOf(
     User(
@@ -96,57 +104,102 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
         userViewModel.getUserProfile(user.username)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "个人信息维护",
-            fontSize = 32.sp,
+    Scaffold(
+        bottomBar = { BottomNavigation() }
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .fillMaxSize()
+                .padding(innerPadding)
                 .padding(16.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+        ) {
+            Text(
+                text = "个人信息维护",
+                fontSize = 32.sp,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(16.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        userProfileData?.let { user ->
-            Text(
-                text = "Username: ${user.username}",
-                fontSize = 18.sp,
-                modifier = Modifier.align(Alignment.Start)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Password: ${user.password}",
-                fontSize = 18.sp,
-                modifier = Modifier.align(Alignment.Start)
-            )
-        } ?: run {
-            Text(
-                text = "Loading...",
-                fontSize = 18.sp,
-                modifier = Modifier.align(Alignment.Start)
-            )
+            userProfileData?.let { user ->
+                Text(
+                    text = "Username: ${user.username}",
+                    fontSize = 18.sp,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Password: ${user.password}",
+                    fontSize = 18.sp,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+            } ?: run {
+                Text(
+                    text = "Loading...",
+                    fontSize = 18.sp,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    navController.popBackStack("Home", inclusive = false)
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "返回主页")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { navController.navigate("updateResult/更新信息") },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text(text = "更新信息")
+            }
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                navController.popBackStack("Home", inclusive = false)//todo 这个跳转有问题
+//底部导航栏，在本页面中只让Home的onclick产生页面切换效果，让Profile的被选中属性为真
+@Composable
+private fun BottomNavigation(modifier: Modifier = Modifier) {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = modifier
+    ) {
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = null
+                )
             },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "返回主页")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = { navController.navigate("updateResult/更新信息") },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "更新信息")
-        }
+            label = {
+                Text(
+                    text = "Home"
+                )
+            },
+            selected = false,
+            onClick = { switchScreenType() }
+        )
+        NavigationBarItem(
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = null
+                )
+            },
+            label = {
+                Text(
+                    text = "Profile"
+                )
+            },
+            selected = true,
+            onClick = { }
+        )
     }
 }
 

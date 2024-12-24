@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.carbontrace.Home.HomeScreen
 import com.example.carbontrace.article.AQScreen
 import com.example.carbontrace.article.post1
+import com.example.carbontrace.article.post3
 import com.example.carbontrace.model.User
 import com.example.carbontrace.repository.UserRepository
 import com.example.carbontrace.transfer.UserViewModel

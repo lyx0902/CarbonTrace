@@ -72,6 +72,10 @@ import com.example.carbontrace.article.PostType
 import com.example.carbontrace.article.defaultSpacerSize
 import com.example.carbontrace.article.post1
 import com.example.carbontrace.article.post2
+import com.example.carbontrace.article.post3
+import com.example.carbontrace.article.post4
+import com.example.carbontrace.article.post5
+import com.example.carbontrace.article.post6
 import com.example.carbontrace.article.postContentItems
 import com.example.carbontrace.screenType
 import com.example.carbontrace.switchScreenType
@@ -132,7 +136,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     //测试文章列表
-    val postList = listOf(post1, post2)
+    val postList = listOf(post1, post2, post3,post4,post5,post6)
     Scaffold(
         bottomBar = { BottomNavigation() }
     ) { innerPadding ->

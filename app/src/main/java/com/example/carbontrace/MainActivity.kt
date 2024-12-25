@@ -74,7 +74,7 @@ enum class ScreenType {
 }
 
 //可变状态
-var screenType by mutableStateOf(ScreenType.PROFILE)
+var screenType by mutableStateOf(ScreenType.LOGIN)
 var targetPost by mutableStateOf(post1)
 var user by mutableStateOf(
     User(

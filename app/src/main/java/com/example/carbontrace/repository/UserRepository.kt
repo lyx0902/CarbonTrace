@@ -43,8 +43,8 @@ object UserRepository {
     }
 
     //用户个人信息更新
-    suspend fun updateProfile(username: String,newName:String, newPassword: String): Result<String> {
-        val updateProfileRequest = UpdateProfileRequest(username, newName,newPassword)
+    suspend fun updateProfile(username: String,password:String, newPassword: String): Result<String> {
+        val updateProfileRequest = UpdateProfileRequest(username, password,newPassword)
         return try {
             val response = RetrofitInstance.apiService.updateProfile(updateProfileRequest)
             if (response.isSuccessful) {

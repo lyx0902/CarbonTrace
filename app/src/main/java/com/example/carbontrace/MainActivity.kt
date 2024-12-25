@@ -160,7 +160,7 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        val result = UserRepository.updateProfile(user.username, user.password, newPassword)
+                        val result = UserRepository.updateProfile("Bob","123456", newPassword)
                         if (result.isSuccess) {
                             showDialog = true
                         }

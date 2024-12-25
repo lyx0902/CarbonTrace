@@ -89,12 +89,12 @@ class LoginActivity : ComponentActivity() {
         NavHost(navController, startDestination = "welcome") {
             composable("login") { LoginPage(navController) }
             composable("welcome") { WelcomePage(navController) }
-            composable("loginResult") { LoginResultPage("") }
+//            composable("loginResult") { LoginResultPage("") }
             composable("userProfileMaintenance") { UserProfileMaintenancePage(navController) }
-            composable("userProfile") { UserProfilePage(navController) }
+//            composable("userProfile") { UserProfilePage(navController) }
             composable("updateResult/{result}") { backStackEntry ->
                 val result = backStackEntry.arguments?.getString("result")
-                UpdateResultPage(navController, result)
+//                UpdateResultPage(navController, result)
             }
         }
     }
@@ -175,22 +175,23 @@ class LoginActivity : ComponentActivity() {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
+
             Button(
-                onClick = ({ /*TODO*/ }),
+                onClick = { navController.navigate("login") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Create account",
+                    text = "Log in",
                     color = Color.White
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
-            TextButton(onClick = { navController.navigate("login") }) {
+            TextButton(onClick = ({ /*TODO*/ })) {
                 Text(
-                    text = "Log in",
+                    text = "Create account",
                     color = Color(0xFF3A3A3A)
                 )
             }
@@ -257,21 +258,21 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    @Composable
-    fun LoginResultPage(loginMessage: String) {//登录结果界面
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = loginMessage,
-                fontSize = 24.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
+//    @Composable
+//    fun LoginResultPage(loginMessage: String) {//登录结果界面
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(16.dp),
+//            contentAlignment = Alignment.Center
+//        ) {
+//            Text(
+//                text = loginMessage,
+//                fontSize = 24.sp,
+//                textAlign = TextAlign.Center
+//            )
+//        }
+//    }
 
     @Composable
     fun LoginTitle() {
@@ -393,59 +394,60 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-    @Composable
-    fun UserProfilePage(navController: NavHostController) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Spacer(modifier = Modifier.height(44.dp))
-            Text(
-                text = "我的",
-                fontSize = 32.sp,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .padding(32.dp)
-            )
-            Text(
-                text = "Username :",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(24.dp)
-            )
-            Text(
-                text = "Grade :",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(24.dp)
-            )
-            Text(
-                text = "Points :",
-                fontSize = 18.sp,
-                modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(24.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("userProfileMaintenance") },
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = "个人信息维护",
-                    fontSize = 20.sp
-                )
-            }
-        }
-    }
+//    @Composable
+//    fun UserProfilePage(navController: NavHostController) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//        ) {
+//            Spacer(modifier = Modifier.height(44.dp))
+//            Text(
+//                text = "我的",
+//                fontSize = 32.sp,
+//                modifier = Modifier
+//                    .align(Alignment.CenterHorizontally)
+//                    .padding(32.dp)
+//            )
+//            Text(
+//                text = "Username :",
+//                fontSize = 18.sp,
+//                modifier = Modifier
+//                    .align(Alignment.Start)
+//                    .padding(24.dp)
+//            )
+//            Text(
+//                text = "Grade :",
+//                fontSize = 18.sp,
+//                modifier = Modifier
+//                    .align(Alignment.Start)
+//                    .padding(24.dp)
+//            )
+//            Text(
+//                text = "Points :",
+//                fontSize = 18.sp,
+//                modifier = Modifier
+//                    .align(Alignment.Start)
+//                    .padding(24.dp)
+//            )
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Button(
+//                onClick = { navController.navigate("userProfileMaintenance") },
+//                modifier = Modifier
+//                    .align(Alignment.End)
+//                    .padding(16.dp)
+//            ) {
+//                Text(
+//                    text = "个人信息维护",
+//                    fontSize = 20.sp
+//                )
+//            }
+//        }
+//    }
 
     @Composable
     fun UserProfileMaintenancePage(navController: NavHostController) {
         var userProfileData by remember { mutableStateOf<Result<Map<String, Any>>?>(null) }
+        var newPassword by remember { mutableStateOf("") }
 
         LaunchedEffect(user.username) {
             val result = UserRepository.getUserByName(user.username)
@@ -486,51 +488,46 @@ class LoginActivity : ComponentActivity() {
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("userProfile") },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "返回主页")
-            }
+            OutlinedTextField(
+                value = newPassword,
+                onValueChange = { newPassword = it },
+                label = { Text("newpassword") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+            )
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("updateResult/更新信息") },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "更新信息")
-            }
         }
     }
 
-@Composable
-    fun UpdateResultPage(navController: NavHostController, result: String?) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "更新结果",
-                fontSize = 32.sp,
-                modifier = Modifier.padding(16.dp)
-            )
-            Text(
-                text = result ?: "无结果",
-                fontSize = 18.sp,
-                modifier = Modifier.padding(16.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("userProfileMaintenance") },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "返回个人信息维护")
-            }
-        }
-    }
+//@Composable
+//    fun UpdateResultPage(navController: NavHostController, result: String?) {
+//        Column(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(16.dp),
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//            verticalArrangement = Arrangement.Center
+//        ) {
+//            Text(
+//                text = "更新结果",
+//                fontSize = 32.sp,
+//                modifier = Modifier.padding(16.dp)
+//            )
+//            Text(
+//                text = result ?: "无结果",
+//                fontSize = 18.sp,
+//                modifier = Modifier.padding(16.dp)
+//            )
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Button(
+//                onClick = { navController.navigate("userProfileMaintenance") },
+//                modifier = Modifier.align(Alignment.CenterHorizontally)
+//            ) {
+//                Text(text = "返回个人信息维护")
+//            }
+//        }
+//    }
 
 
 //@Preview(showBackground = true)

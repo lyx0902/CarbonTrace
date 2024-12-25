@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +48,7 @@ import com.example.carbontrace.model.User
 import com.example.carbontrace.repository.UserRepository
 import com.example.carbontrace.transfer.UserViewModel
 import com.example.carbontrace.ui.theme.CarbonTraceTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val userViewModel: UserViewModel by viewModels()
@@ -99,6 +102,9 @@ fun switchScreenType() {
 @Composable
 fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel) {
     val userProfileData by userViewModel.userProfile.observeAsState()
+    var newPassword by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(user.username) {
         userViewModel.getUserProfile(user.username)
@@ -141,27 +147,47 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
                     modifier = Modifier.align(Alignment.Start)
                 )
             }
-
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = newPassword,
+                onValueChange = { newPassword = it },
+                label = { Text("newpassword") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+            )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    navController.popBackStack("Home", inclusive = false)
+                    coroutineScope.launch {
+                        val result = UserRepository.updateProfile(user.username, user.password, newPassword)
+                        if (result.isSuccess) {
+                            showDialog = true
+                        }
+                    }
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(text = "返回主页")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { navController.navigate("updateResult/更新信息") },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text(text = "更新信息")
             }
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text(text = "提示") },
+                    text = { Text(text = "更新成功") },
+                    confirmButton = {
+                        Button(
+                            onClick = { showDialog = false }
+                        ) {
+                            Text("确定")
+                        }
+                    }
+                )
+            }
         }
     }
 }
+
 
 //底部导航栏，在本页面中只让Home的onclick产生页面切换效果，让Profile的被选中属性为真
 @Composable

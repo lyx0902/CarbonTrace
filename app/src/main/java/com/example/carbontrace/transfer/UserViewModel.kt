@@ -60,7 +60,10 @@ class UserViewModel : ViewModel() {
                         val points = (data["points"] as? Int) ?: 0
                         val age = (data["age"] as? Int) ?: 0
 
-                        _userProfile.value = User(uid, name, password, grade, carbons, points, age)
+                        // 打印日志以调试
+                        println("uid: $uid, username: $name, password: $password, grade: $grade, carbons: $carbons, points: $points, age: $age")
+
+                        _userProfile.value = User(uid, "Bob", "123456", grade, carbons, points, age)
                     } else {
                         _userProfile.value = User(null, "Invalid Data", "", 0, 0, 0, 0)
                     }

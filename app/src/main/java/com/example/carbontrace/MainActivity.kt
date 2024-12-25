@@ -106,8 +106,8 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
     var showDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(user.username) {
-        userViewModel.getUserProfile(user.username)
+    LaunchedEffect("Bob") {
+        userViewModel.getUserProfile("Bob")
     }
 
     Scaffold(

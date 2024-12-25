@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -131,14 +132,17 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     fun LeafImage() {
-        Image(
-            painter = painterResource(id = R.drawable.welcomeleaf),
-            contentDescription = "leaf",
+        Box(
             modifier = Modifier
-                .wrapContentSize()
-                .size(300.dp)
-                .padding(start = 125.dp)
-        )
+                .fillMaxWidth()
+                .wrapContentSize(Alignment.Center)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.leaf),
+                contentDescription = "leaf",
+                modifier = Modifier.size(300.dp)
+            )
+        }
     }
 
     @Composable
@@ -148,8 +152,8 @@ class LoginActivity : ComponentActivity() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.welcomebloom),
-                contentDescription = "welcome_bloom",
+                painter = painterResource(id = R.drawable.title),
+                contentDescription = "title",
                 modifier = Modifier
                     .wrapContentSize()
                     .height(72.dp)
@@ -162,7 +166,7 @@ class LoginActivity : ComponentActivity() {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 Text(
-                    text = "Beautiful home garden solutions",
+                    text = "新一代生活健康解决方案",
                     textAlign = TextAlign.Center
                 )
             }
@@ -184,14 +188,14 @@ class LoginActivity : ComponentActivity() {
                     .padding(horizontal = 16.dp)
             ) {
                 Text(
-                    text = "Log in",
+                    text = "登录",
                     color = Color.White
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
             TextButton(onClick = ({ /*TODO*/ })) {
                 Text(
-                    text = "Create account",
+                    text = "注册",
                     color = Color(0xFF3A3A3A)
                 )
             }
@@ -249,7 +253,7 @@ class LoginActivity : ComponentActivity() {
                         .padding(horizontal = 80.dp)
                 ) {
                     Text(
-                        text = "Return",
+                        text = "返回",
                         color = Color.White,
                         fontSize = 18.sp
                     )
@@ -277,7 +281,7 @@ class LoginActivity : ComponentActivity() {
     @Composable
     fun LoginTitle() {
         Text(
-            text = "CarbonTrace",
+            text = "碳踪寻迹",
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
             fontSize = 36.sp
@@ -326,18 +330,33 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
+//    @Composable
+//    fun TopText() {
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.SpaceBetween
+//        ) {
+//            var keywordPre = "单击下面即表示您同意我们的".split(" ")
+//            for (word in keywordPre) {
+//                Text(text = word)
+//            }
+//            Text(
+//                text = "使用条款",
+//                textDecoration = TextDecoration.Underline
+//            )
+//        }
+//    }
+
     @Composable
     fun TopText() {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
         ) {
-            var keywordPre = "By Clicking below you agree to our ".split(" ")
-            for (word in keywordPre) {
-                Text(text = word)
-            }
+            Text(text = "单击下面即表示您同意我们的")
             Text(
-                text = "Terms of Use",
+                text = "使用条款",
                 textDecoration = TextDecoration.Underline
             )
         }
@@ -350,9 +369,9 @@ class LoginActivity : ComponentActivity() {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = " and consent to Our ")
+            Text(text = "并同意我们的")
             Text(
-                text = "Privacy Policy",
+                text = "隐私政策",
                 textDecoration = TextDecoration.Underline
             )
         }
@@ -387,7 +406,7 @@ class LoginActivity : ComponentActivity() {
                 .height(48.dp)
         ) {
             Text(
-                text = "Log in",
+                text = "登录",
                 color = Color.White,
                 fontSize = 20.sp
             )
@@ -491,7 +510,7 @@ class LoginActivity : ComponentActivity() {
             OutlinedTextField(
                 value = newPassword,
                 onValueChange = { newPassword = it },
-                label = { Text("newpassword") },
+                label = { Text("newPassword") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)

@@ -74,7 +74,7 @@ enum class ScreenType {
 }
 
 //可变状态
-var screenType by mutableStateOf(ScreenType.PROFILE)
+var screenType by mutableStateOf(ScreenType.LOGIN)
 var targetPost by mutableStateOf(post1)
 var user by mutableStateOf(
     User(
@@ -106,8 +106,8 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
     var showDialog by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(user.username) {
-        userViewModel.getUserProfile(user.username)
+    LaunchedEffect("Bob") {
+        userViewModel.getUserProfile("Bob")
     }
 
     Scaffold(
@@ -160,7 +160,7 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        val result = UserRepository.updateProfile(user.username, user.password, newPassword)
+                        val result = UserRepository.updateProfile("Bob","123456", newPassword)
                         if (result.isSuccess) {
                             showDialog = true
                         }
@@ -177,7 +177,10 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
                     text = { Text(text = "更新成功") },
                     confirmButton = {
                         Button(
-                            onClick = { showDialog = false }
+                            onClick = {
+                                showDialog = false
+                                switchScreenType()
+                            }
                         ) {
                             Text("确定")
                         }

@@ -140,6 +140,12 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
                     fontSize = 18.sp,
                     modifier = Modifier.align(Alignment.Start)
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Points: 10",
+                    fontSize = 18.sp,
+                    modifier = Modifier.align(Alignment.Start)
+                )
             } ?: run {
                 Text(
                     text = "Loading...",

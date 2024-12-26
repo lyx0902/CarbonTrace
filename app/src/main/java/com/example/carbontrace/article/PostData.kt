@@ -287,7 +287,7 @@ val questions2 = listOf(
     question110
 )
 
-val results2 = listOf("","")
+val results2 = listOf("","","","","","","","","","")
 
 val question21 = Question(
     title = "冬季起床时，中老年人应该遵循的三个“一分钟”是什么？",
@@ -412,7 +412,7 @@ val questions3 = listOf(
     question210
 )
 
-val results3 = listOf("","")
+val results3 = listOf("","","","","","","","","","")
 
 //全页面（文章+问题集）
 enum class PostType{
@@ -461,7 +461,7 @@ val post2 = Post(
 )
 val post3 = Post(
     id="3",
-    type = PostType.ARTICLE,
+    type = PostType.QUIZ,
     title="世界防治肥胖日：中国9000万肥胖人群如何科学有效减重？",
     subtitle="管住嘴，迈开腿，说起来容易，做起来难",
     metadata = Metadata(
@@ -476,7 +476,7 @@ val post3 = Post(
 )
 val post4 = Post(
     id="4",
-    type = PostType.ARTICLE,
+    type = PostType.QUIZ,
     title="冬季养生：老年人如何科学健康度过寒冷的冬季？",
     subtitle="冬季养生，老年人如何科学健康度过寒冷的冬季？",
     metadata = Metadata(

@@ -82,8 +82,29 @@ fun LazyListScope.postContentItems(post: Post, checkedOptions: MutableList<Strin
     item { PostMetadata(post.metadata, Modifier.padding(bottom = 24.dp)) }
     items(post.paragraphs) { Paragraph(paragraph = it) }
     item { Spacer(Modifier.height(defaultSpacerSize)) }
-
+    item { TakeActivity(post) }
     item { PostQuestions(post.questions, checkedOptions, results) }
+}
+
+//活动报名
+@Composable
+private fun TakeActivity(post: Post) {
+    var taker by remember { mutableStateOf(false) }
+    if(post.type == PostType.ACTIVITY) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ){
+            OutlinedButton(
+                onClick = {
+                    taker = !taker
+                }
+            ) {
+                if (taker) Text("我要取消报名")
+                else Text("我要报名")
+            }
+        }
+    }
 }
 
 

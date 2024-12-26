@@ -197,7 +197,6 @@ fun ProfileScreen(navController: NavHostController, userViewModel: UserViewModel
     }
 }
 
-
 //底部导航栏，在本页面中只让Home的onclick产生页面切换效果，让Profile的被选中属性为真
 @Composable
 private fun BottomNavigation(modifier: Modifier = Modifier) {

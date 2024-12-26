@@ -1,5 +1,7 @@
 package com.example.carbontrace.article
 
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -191,6 +193,7 @@ fun postQuestion(question: Question, index: Int, result: String): String {
 //按键可以设置数据传输逻辑，将答题情况以及得分情况传回服务器
 @Composable
 fun PostQuestions(questions: List<Question>, checkedOptions: MutableList<String>, results: MutableList<String>){
+    val context = LocalContext.current
     questions.forEach{
         val index = questions.indexOf(it)
         checkedOptions[index] = postQuestion(question = it, index = index, result = results[index])
@@ -204,15 +207,25 @@ fun PostQuestions(questions: List<Question>, checkedOptions: MutableList<String>
         if(questions.isNotEmpty()) {
             OutlinedButton(
                 onClick = {
-                    if (checkedOptions.all { it != "" })
+                    if (checkedOptions.all { it != "" }) {
+                        var correctCount = 0
                         questions.forEach {
                             val index = questions.indexOf(it)
                             if (it.answer == checkedOptions[index]) {
                                 results[index] = "correct"
+                                correctCount++
                             } else {
                                 results[index] = "wrong"
                             }
                         }
+                        val score = correctCount * 10
+                        //将答题情况以及得分情况传回服务器
+                        Toast.makeText(
+                            context,
+                            "正确回答的问题: $correctCount, 得分: $score",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             ) {
                 if (results.all { it != "" }) Text("答案已提交：错误个数为 ${results.count { it == "wrong" }}")

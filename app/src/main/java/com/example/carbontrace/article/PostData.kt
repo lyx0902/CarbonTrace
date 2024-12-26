@@ -1,9 +1,6 @@
 package com.example.carbontrace.article
 
 import androidx.annotation.DrawableRes
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.toMutableStateList
-import androidx.lifecycle.ViewModel
 import com.example.carbontrace.R
 
 //页面附加信息：作者、上传时间、最小阅读时间

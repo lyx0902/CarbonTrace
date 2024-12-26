@@ -1,9 +1,5 @@
 package com.example.carbontrace
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,79 +19,23 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-//import com.example.carbontrace.ui.theme.CarbonTraceTheme
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.carbontrace.model.User
 import com.example.carbontrace.repository.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/*
-class LoginActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-                CarbonTraceTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    val user = User(
-                        uid = 1,
-                        username = "exampleUsername",
-                        password = "examplePassword",
-                        grade = 1,
-                        carbons = 100,
-                        points = 200,
-                        age = 25
-                    )
-                    AppNavHost(rememberNavController(),user)
-//                    AppNavigation()
-                }
-                }
-            }
-        }
-    }
- */
-
-//    @Composable
-//    fun AppNavigation() {
-//        val navController = rememberNavController()
-//        var loginMessage by remember { mutableStateOf("") }
-//
-//        NavHost(navController = navController, startDestination = "welcome") {
-//            composable("login") { LoginPage(navController) }
-//            composable("welcome") { WelcomePage(navController) }
-//            composable("loginResult") { LoginResultPage(loginMessage) }
-//        }
-//    }
-//
-//    @Composable
-//    fun AppNavHost(navController: NavHostController, user: User) {
-//        NavHost(navController, startDestination = "userProfile") {
-//            composable("userProfileMaintenance") { UserProfileMaintenancePage(navController, user) }
-//            composable("userProfile") { UserProfilePage(navController) }
-//            composable("updateResult/{result}") { backStackEntry ->
-//                val result = backStackEntry.arguments?.getString("result")
-//                UpdateResultPage(result)
-//            }
-//        }
-//    }
-
     @Composable
     fun AppNavHost(navController: NavHostController) {
         NavHost(navController, startDestination = "welcome") {
             composable("login") { LoginPage(navController) }
             composable("welcome") { WelcomePage(navController) }
-//            composable("loginResult") { LoginResultPage("") }
             composable("userProfileMaintenance") { UserProfileMaintenancePage(navController) }
-//            composable("userProfile") { UserProfilePage(navController) }
             composable("updateResult/{result}") { backStackEntry ->
                 val result = backStackEntry.arguments?.getString("result")
-//                UpdateResultPage(navController, result)
             }
         }
     }
@@ -262,21 +202,6 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-//    @Composable
-//    fun LoginResultPage(loginMessage: String) {//登录结果界面
-//        Box(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(16.dp),
-//            contentAlignment = Alignment.Center
-//        ) {
-//            Text(
-//                text = loginMessage,
-//                fontSize = 24.sp,
-//                textAlign = TextAlign.Center
-//            )
-//        }
-//    }
 
     @Composable
     fun LoginTitle() {
@@ -330,22 +255,6 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-//    @Composable
-//    fun TopText() {
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            horizontalArrangement = Arrangement.SpaceBetween
-//        ) {
-//            var keywordPre = "单击下面即表示您同意我们的".split(" ")
-//            for (word in keywordPre) {
-//                Text(text = word)
-//            }
-//            Text(
-//                text = "使用条款",
-//                textDecoration = TextDecoration.Underline
-//            )
-//        }
-//    }
 
     @Composable
     fun TopText() {
@@ -413,56 +322,6 @@ class LoginActivity : ComponentActivity() {
         }
     }
 
-//    @Composable
-//    fun UserProfilePage(navController: NavHostController) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//        ) {
-//            Spacer(modifier = Modifier.height(44.dp))
-//            Text(
-//                text = "我的",
-//                fontSize = 32.sp,
-//                modifier = Modifier
-//                    .align(Alignment.CenterHorizontally)
-//                    .padding(32.dp)
-//            )
-//            Text(
-//                text = "Username :",
-//                fontSize = 18.sp,
-//                modifier = Modifier
-//                    .align(Alignment.Start)
-//                    .padding(24.dp)
-//            )
-//            Text(
-//                text = "Grade :",
-//                fontSize = 18.sp,
-//                modifier = Modifier
-//                    .align(Alignment.Start)
-//                    .padding(24.dp)
-//            )
-//            Text(
-//                text = "Points :",
-//                fontSize = 18.sp,
-//                modifier = Modifier
-//                    .align(Alignment.Start)
-//                    .padding(24.dp)
-//            )
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Button(
-//                onClick = { navController.navigate("userProfileMaintenance") },
-//                modifier = Modifier
-//                    .align(Alignment.End)
-//                    .padding(16.dp)
-//            ) {
-//                Text(
-//                    text = "个人信息维护",
-//                    fontSize = 20.sp
-//                )
-//            }
-//        }
-//    }
-
     @Composable
     fun UserProfileMaintenancePage(navController: NavHostController) {
         var userProfileData by remember { mutableStateOf<Result<Map<String, Any>>?>(null) }
@@ -518,48 +377,3 @@ class LoginActivity : ComponentActivity() {
 
         }
     }
-
-//@Composable
-//    fun UpdateResultPage(navController: NavHostController, result: String?) {
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(16.dp),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            Text(
-//                text = "更新结果",
-//                fontSize = 32.sp,
-//                modifier = Modifier.padding(16.dp)
-//            )
-//            Text(
-//                text = result ?: "无结果",
-//                fontSize = 18.sp,
-//                modifier = Modifier.padding(16.dp)
-//            )
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Button(
-//                onClick = { navController.navigate("userProfileMaintenance") },
-//                modifier = Modifier.align(Alignment.CenterHorizontally)
-//            ) {
-//                Text(text = "返回个人信息维护")
-//            }
-//        }
-//    }
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    CarbonTraceTheme{
-//        LoginPage(navController = rememberNavController())
-//    }
-//}
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    CarbonTraceTheme{
-//        UserProfilePage()
-//    }
